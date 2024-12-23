@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: client-gateway
-  namespace: production
+  namespace: qa
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: client-gateway
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: client-gateway
-          image: your-docker-image:prod
+          image: your-docker-image:qa
           envFrom:
             - secretRef:
                 name: client-gateway-secrets

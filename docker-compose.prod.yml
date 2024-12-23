@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    image: client_gateway_app:latest
+    build:
+      context: ./client_gateway
+      dockerfile: .docker/Dockerfile
+    env_file:
+      - ./client_gateway/envs/prod.env
+    ports:
+      - '8000:8000'
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./client_gateway:/usr/src/app
+    networks:
+      - production
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq_prod
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - production
+
+networks:
+  production:
+    driver: bridge

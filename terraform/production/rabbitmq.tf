@@ -35,11 +35,11 @@ resource "kubernetes_deployment" "rabbitmq" {
           }
           env {
             name  = "RABBITMQ_DEFAULT_USER"
-            value = "user"
+            value = var.rabbitmq_user
           }
           env {
             name  = "RABBITMQ_DEFAULT_PASS"
-            value = "password"
+            value = var.rabbitmq_password
           }
         }
       }

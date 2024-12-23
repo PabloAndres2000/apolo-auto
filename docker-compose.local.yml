@@ -61,15 +61,6 @@ services:
     networks:
       - app-network
 
-  terraform:
-    image: hashicorp/terraform:latest
-    volumes:
-      - ./terraform:/workspace
-    working_dir: /workspace
-    entrypoint: ['terraform']
-    networks:
-      - backend
-
 volumes:
   postgres-data:
     driver: local
