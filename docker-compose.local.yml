@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: 'rabbitmq:management'
+    container_name: rabbitmq
+    ports:
+      - '5672:5672' # Puerto de RabbitMQ
+      - '15672:15672' # Interfaz web de RabbitMQ
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    networks:
+      - app-network
+
+  db:
+    image: 'postgres:13'
+    container_name: postgres
+    environment:
+      POSTGRES_DB: django_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  client_gateway:
+    build:
+      context: ./client_gateway # Ajusta la ruta si es necesario
+    container_name: client_gateway
+    command:
+      ['celery', '-A', 'client_gateway.celery', 'worker', '--loglevel=info']
+    volumes:
+      - ./client_gateway:/app # Monta el código fuente de client_gateway
+    ports:
+      - '8000:8000' # Puerto para acceder a la aplicación Django
+    environment:
+      - DJANGO_SETTINGS_MODULE=client_gateway.settings.local
+      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - rabbitmq
+      - db
+    networks:
+      - app-network
+
+  redis:
+    image: 'redis:alpine'
+    container_name: redis
+    networks:
+      - app-network
+
+  terraform:
+    image: hashicorp/terraform:latest
+    volumes:
+      - ./terraform:/workspace # El directorio local de terraform se monta en /workspace
+    working_dir: /workspace # Establecemos el directorio de trabajo
+    entrypoint: ['terraform'] # Esto asegura que terraform sea ejecutado por defecto
+    networks:
+      - backend
+
+volumes:
+  postgres-data:
+    driver: local
+  backend:
+    driver: bridge
+
+networks:
+  app-network:
+    driver: bridge
