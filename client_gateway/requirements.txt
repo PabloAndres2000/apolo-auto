@@ -1,2 +1,4 @@
 celery
 redis
+pika  # Para la conexión con RabbitMQ
+python-dotenv
