@@ -42,7 +42,7 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - DJANGO_SETTINGS_MODULE=client_gateway.settings.local
+      - DJANGO_SETTINGS_MODULE=app.settings.base
       - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672//
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:

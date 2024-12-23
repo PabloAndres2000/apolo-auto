@@ -1,4 +1,12 @@
+Django>=4.0,<5.0
+psycopg2-binary
+djangorestframework
+django-cors-headers
+django-extensions
+python-dotenv
+django-admin-interface
+django-simple-history
+
 celery
 redis
 pika  # Para la conexión con RabbitMQ
-python-dotenv

@@ -3,7 +3,7 @@ import os
 from celery import Celery
 
 # Establece el módulo de configuración predeterminado de Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings.local')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings.base')
 
 app = Celery('client_gateway')
 
