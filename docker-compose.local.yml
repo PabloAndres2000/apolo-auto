@@ -42,14 +42,18 @@ services:
     ports:
       - '8000:8000'
     environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - DEBUG=True
       - DJANGO_SETTINGS_MODULE=app.settings.base
-      - CELERY_BROKER_URL=amqp://user:password@rabbitmq:5672//
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       rabbitmq:
         condition: service_healthy
     volumes:
       - ./client_gateway:/app
+    networks:
+      - app-network
 
   redis:
     image: 'redis:alpine'
@@ -73,5 +77,6 @@ volumes:
 networks:
   app-network:
     driver: bridge
+
   backend:
     driver: bridge
